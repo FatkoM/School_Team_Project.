@@ -1,5 +1,5 @@
 <?php
-require_once '../db/db_connection.php';
+require_once '../Config/db_connection.php';
 
 if (isset($_GET['q'])) {
     $q = $conn->real_escape_string($_GET['q']);
