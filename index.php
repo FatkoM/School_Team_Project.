@@ -35,40 +35,7 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold d-flex align-items-center">
-                <img src="images/logo-eBookStore.png" alt="Logo" width="40" class="me-2">
-                 eBookStore
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active fw-bold" aria-current="page" href="index.html">Начало</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link fw-bold" href="books_catalog.html">Каталог</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link fw-bold" href="cart.html">Количка</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link fw-bold" href="#">Вход</a>
-                    </li>
-                </ul>
-                <form class="d-flex position-relative" role="search" onsubmit="return false;">
-                    <input class="form-control me-2" type="search" id="search" placeholder="Търси книга..."
-                        aria-label="Search" autocomplete="off" />
-                    <div id="search-results"></div>
-                </form>
-            </div>
-        </div>
-    </nav>
+    <?php include 'includes/header.php'; ?>
 
     <main>
         <!-- Carousel -->
@@ -162,18 +129,7 @@
         </section>
     </main>
 
-    <footer class="text-white py-4 mt-5">
-        <p class="mb-1">&copy; 2026 eBookStore. Всички права запазени.</p>
-        <p class="mb-1">
-            <a href="#" class="text-white me-3 text-decoration-none">Политика за поверителност</a>
-            <a href="#" class="text-white text-decoration-none">Контакти</a>
-        </p>
-        <p class="mb-0">
-            <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
-            <a href="#" class="text-white me-3"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="text-white"><i class="bi bi-twitter"></i></a>
-        </p>
-    </footer>
+    <?php include 'includes/footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"

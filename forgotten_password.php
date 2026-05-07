@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Възстановяване на парола - eBookStore</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style2.css">
+</head>
+<body>
+
+    <main>
+        <div class="card login-card">
+            
+            <div id="formContent">
+                <div class="text-center mb-4">
+                    <i class="bi bi-shield-lock" style="font-size: 3rem; color: #0b5367;"></i>
+                    <h2 class="fw-bold mt-2" style="color: #0b5367;">Нова парола</h2>
+                    <p class="text-muted">Въведете данните си, за да обновите паролата директно.</p>
+                </div>
+
+                <form onsubmit="return simulateSuccess(event)">
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold text-secondary small uppercase">ИМЕЙЛ</label>
+                        <input type="email" class="form-control form-control-lg border-2" 
+                               style="border-radius: 0.7rem;" placeholder="email@example.com" required>
+                    </div>
+
+                    <div class="mb-4 text-start">
+                        <label class="form-label fw-bold text-secondary small uppercase">НОВА ПАРОЛА</label>
+                        <input type="password" class="form-control form-control-lg border-2" 
+                               style="border-radius: 0.7rem;" placeholder="••••••••" required minlength="6">
+                    </div>
+
+                    <button type="submit" class="btn btn-action w-100 shadow-sm">ЗАПАЗИ ПРОМЕНИТЕ</button>
+                </form>
+            </div>
+
+            <div id="successContent" style="display: none;" class="text-center">
+                <i class="bi bi-check-circle-fill" style="font-size: 4rem; color: #28a745;"></i>
+                <h2 class="fw-bold mt-3" style="color: #0b5367;">Успешно!</h2>
+                <p class="text-muted">Вашата парола е обновена в системата.</p>
+                <a href="login.html" class="btn btn-outline-secondary w-100 mt-3" style="border-radius: 0.75rem;">Към вход</a>
+            </div>
+
+            <div class="text-center mt-4 border-top pt-3">
+                <a href="login.html" class="text-decoration-none small fw-bold" style="color: #348096;">
+                    <i class="bi bi-arrow-left"></i> Обратно към вход
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <?php include 'includes/footer.php'; ?>
+
+    <script>
+        function simulateSuccess(e) {
+            e.preventDefault();
+            document.getElementById('formContent').style.display = 'none';
+            document.getElementById('successContent').style.display = 'block';
+            return false;
+        }
+    </script>
+
+</body>
+</html>
