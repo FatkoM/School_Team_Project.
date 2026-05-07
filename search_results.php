@@ -25,6 +25,29 @@
     <?php include 'includes/footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Get search query from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('q');
+
+        if (searchQuery) {
+            // Fetch search results
+            fetch(`search.php?q=${encodeURIComponent(searchQuery)}`)
+                .then(response => response.text())
+                .then(data => {
+                    const resultsContainer = document.getElementById('search-results-container');
+                    resultsContainer.innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Error fetching search results:', error);
+                    document.getElementById('search-results-container').innerHTML = 
+                        '<p class="text-danger">Error loading search results</p>';
+                });
+        } else {
+            document.getElementById('search-results-container').innerHTML = 
+                '<p class="text-muted">Please enter a search query</p>';
+        }
+    </script>
 </body>
 </html>
 <?php ob_end_flush(); ?>

@@ -17,31 +17,59 @@
     <main>
         <!-- подробности за книга -->
         <section class="container my-5">
+            <?php
+                require_once 'Config/db_connection.php';
+                
+                $bookId = isset($_GET['id']) ? intval($_GET['id']) : 0;
+                
+                if ($bookId > 0) {
+                    $sql = "SELECT b.*, a.name as author_name FROM books b 
+                            LEFT JOIN authors a ON b.author_id = a.id 
+                            WHERE b.id = $bookId";
+                    $result = $conn->query($sql);
+                    
+                    if ($result->num_rows > 0) {
+                        $book = $result->fetch_assoc();
+                    } else {
+                        $book = null;
+                    }
+                } else {
+                    $book = null;
+                }
+                
+                if ($book) {
+            ?>
             <div class="row g-4">
                 <!-- Снимка на книгата -->
                 <div class="col-md-5">
-                    <img src="https://picsum.photos/id/237/400/600" class="img-fluid rounded shadow-sm"
+                    <img src="<?php echo htmlspecialchars($book['image_url'] ?? 'https://picsum.photos/id/237/400/600'); ?>" class="img-fluid rounded shadow-sm"
                         alt="Book Image">
                 </div>
 
                 <!-- Подробности -->
                 <div class="col-md-7">
-                    <h2 class="fw-bold">Примерно заглавие на книга</h2>
-                    <p class="text-muted mb-2"><strong>Автор:</strong> Иван Иванов</p>
-                    <p class="mb-3"><strong>Цена:</strong> 24.99 лв</p>
+                    <h2 class="fw-bold"><?php echo htmlspecialchars($book['title']); ?></h2>
+                    <p class="text-muted mb-2"><strong>Автор:</strong> <?php echo htmlspecialchars($book['author_name'] ?? 'Unknown'); ?></p>
+                    <p class="mb-3"><strong>Цена:</strong> <?php echo htmlspecialchars($book['price'] ?? 'N/A'); ?> лв</p>
                     <p class="mb-4">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora, officia, odio in culpa
-                        obcaecati
-                        fugit rerum perspiciatis natus error voluptatibus facilis a est, similique molestias quasi
-                        recusandae iure cupiditate reiciendis?
+                        <?php echo htmlspecialchars($book['description'] ?? 'No description available'); ?>
                     </p>
                     <button class="btn btn-action btn-lg">Добави в количка</button>
                 </div>
             </div>
+            <?php
+                } else {
+            ?>
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Book Not Found</h4>
+                <p>The book you are looking for does not exist or has been removed.</p>
+                <a href="books_catalog.php" class="btn btn-primary mt-3">Back to Catalog</a>
+            </div>
+            <?php
+                }
+            ?>
         </section>
     </main>
-
-
 
     <?php include 'includes/footer.php'; ?>
 
