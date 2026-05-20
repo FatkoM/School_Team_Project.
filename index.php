@@ -1,4 +1,14 @@
 <!doctype html>
+<?php
+require_once __DIR__ . '/Config/db_connection.php';
+$featuredBooks = [];
+$featuredBooksResult = $conn->query('SELECT id, title, description, price, image_url FROM books ORDER BY id DESC LIMIT 3');
+if ($featuredBooksResult) {
+    while ($row = $featuredBooksResult->fetch_assoc()) {
+        $featuredBooks[] = $row;
+    }
+}
+?>
 <html lang="en">
 
 <head>
@@ -38,50 +48,42 @@
     <?php include 'includes/header.php'; ?>
 
     <main>
-        <!-- Carousel -->
-        <div id="carouselExampleCaptions" class="carousel slide mb-5">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
-                    aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
-                    aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
-                    aria-label="Slide 3"></button>
+        <!-- Hero promo section -->
+        <section class="container my-5">
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-7">
+                    <div class="p-5 rounded-4 shadow-lg" style="background: linear-gradient(135deg, #0b4265, #3a8fc0); color: white;">
+                        <h1 class="display-6 fw-bold">Открий нови книги днес</h1>
+                        <p class="lead">Най-добрите заглавия за училище, програмиране и бизнес, подбрани специално за теб.</p>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2"><i class="bi bi-check-circle-fill me-2"></i> Бързо намиране на най-новите книги</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill me-2"></i> Препоръки от реални ученици</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill me-2"></i> Лесна поръчка и бърза доставка</li>
+                        </ul>
+                        <div class="d-flex flex-column flex-sm-row gap-3">
+                            <a href="books_catalog.php" class="btn btn-light btn-lg">Разгледай каталога</a>
+                            <a href="cart.php" class="btn btn-outline-light btn-lg">Виж количката</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="p-4 rounded-4 shadow-sm h-100" style="background: #ffffff;">
+                                <h5 class="mb-3">Избрано за теб</h5>
+                                <p>Проверете нашите най-интересни категории: учебни помагала, книги за програмиране и мотивация.</p>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="p-4 rounded-4 shadow-sm h-100" style="background: #eef5fc;">
+                                <h5 class="mb-3">Ново в магазина</h5>
+                                <p>Винаги добавяме свежи заглавия. Виж последните добавени продукти в каталога.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="https://picsum.photos/id/237/1200/400" class="d-block w-100" alt="Book 1">
-                    <div class="carousel-caption d-none d-md-block carousel-caption-custom rounded p-2">
-                        <h5>Нова книга</h5>
-                        <p>Открий най-новото заглавие в нашия каталог!</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <img src="https://picsum.photos/id/238/1200/400" class="d-block w-100" alt="Book 2">
-                    <div class="carousel-caption d-none d-md-block carousel-caption-custom rounded p-2">
-                        <h5>Топ книга</h5>
-                        <p>Любими заглавия сред учениците и учителите.</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <img src="https://picsum.photos/id/239/1200/400" class="d-block w-100" alt="Book 3">
-                    <div class="carousel-caption d-none d-md-block carousel-caption-custom rounded p-2">
-                        <h5>Специална оферта</h5>
-                        <p>Вземи книги с намаление и промоции!</p>
-                    </div>
-                </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
-                data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Предишен</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
-                data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Следващ</span>
-            </button>
-        </div>
+        </section>
 
         <hr class="section-divider">
 
@@ -89,42 +91,31 @@
         <section class="container my-5">
             <h2 class="mb-4 text-center">Популярни заглавия</h2>
             <div class="row row-cols-1 row-cols-md-3 g-4">
-                <!-- Example book cards -->
-                <div class="col">
-                    <div class="card">
-                        <img src="https://picsum.photos/id/237/200/300" class="card-img-top" alt="Book 1">
-                        <div class="card-body">
-                            <h5 class="card-title">Книга 1</h5>
-                            <p class="card-text">Кратко описание на книгата.</p>
-                            <p class="fw-bold">Цена: 19.99 лв</p>
-                            <a href="book.html" class="btn btn-action btn-lg">Виж повече</a>
+                <?php if (!empty($featuredBooks)): ?>
+                    <?php foreach ($featuredBooks as $book): ?>
+                        <div class="col">
+                            <div class="card h-100">
+                                <img src="<?= htmlspecialchars($book['image_url'] ?: 'https://picsum.photos/200/300', ENT_QUOTES, 'UTF-8') ?>" class="card-img-top" alt="<?= htmlspecialchars($book['title'], ENT_QUOTES, 'UTF-8') ?>">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title"><?= htmlspecialchars($book['title'], ENT_QUOTES, 'UTF-8') ?></h5>
+                                    <p class="card-text"><?= htmlspecialchars(mb_strimwidth($book['description'] ?? 'Няма описание.', 0, 100, '...'), ENT_QUOTES, 'UTF-8') ?></p>
+                                    <p class="fw-bold mb-3">Цена: <?= number_format($book['price'], 2) ?> лв</p>
+                                    <a href="book.php?id=<?= urlencode($book['id']) ?>" class="btn btn-action btn-lg mt-auto">Виж повече</a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Няма налични книги</h5>
+                                <p class="card-text">Каталогът се обновява скоро.</p>
+                                <a href="books_catalog.php" class="btn btn-action btn-lg">Виж каталога</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col">
-                    <div class="card">
-                        <img src="https://picsum.photos/id/238/200/300" class="card-img-top" alt="Book 2">
-                        <div class="card-body">
-                            <h5 class="card-title">Книга 2</h5>
-                            <p class="card-text">Кратко описание на книгата.</p>
-                            <p class="fw-bold">Цена: 24.99 лв</p>
-                            <a href="book.php" class="btn btn-action btn-lg">Виж повече</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col">
-                    <div class="card">
-                        <img src="https://picsum.photos/id/239/200/300" class="card-img-top" alt="Book 3">
-                        <div class="card-body">
-                            <h5 class="card-title">Книга 3</h5>
-                            <p class="card-text">Кратко описание на книгата.</p>
-                            <p class="fw-bold">Цена: 21.99 лв</p>
-                            <a href="book.html" class="btn btn-action btn-lg">Виж повече</a>
-                        </div>
-                    </div>
-                </div>
+                <?php endif; ?>
             </div>
         </section>
     </main>

@@ -54,7 +54,11 @@
                     <p class="mb-4">
                         <?php echo htmlspecialchars($book['description'] ?? 'No description available'); ?>
                     </p>
-                    <button class="btn btn-action btn-lg">Добави в количка</button>
+                    <form method="POST" action="cart.php" class="d-inline">
+                        <input type="hidden" name="action" value="add">
+                        <input type="hidden" name="book_id" value="<?php echo $book['id']; ?>">
+                        <button type="submit" class="btn btn-action btn-lg">Добави в количка</button>
+                    </form>
                 </div>
             </div>
             <?php

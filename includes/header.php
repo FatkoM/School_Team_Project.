@@ -1,9 +1,26 @@
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+$cart_count = 0;
+if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+    foreach ($_SESSION['cart'] as $item) {
+        $cart_count += isset($item['quantity']) ? (int) $item['quantity'] : 0;
+    }
+}
+
+$isLoggedIn = isset($_SESSION['user_id']);
+$isAdmin = !empty($_SESSION['is_admin']);
+$userName = $_SESSION['user_name'] ?? '';
+?>
+
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand fw-bold d-flex align-items-center" href="index.php">
+        <span class="navbar-brand fw-bold d-flex align-items-center">
             <img src="images/logo-eBookStore.png" alt="Logo" width="40" class="me-2">
              eBookStore
-        </a>
+        </span>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
             aria-label="Toggle navigation">
@@ -18,11 +35,31 @@
                     <a class="nav-link" href="books_catalog.php">Каталог</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="cart.php">Количка</a>
+                    <a class="nav-link" href="cart.php">
+                        Количка
+                        <?php if ($cart_count > 0): ?>
+                            <span class="badge bg-danger ms-1"><?= $cart_count ?></span>
+                        <?php endif; ?>
+                    </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="login.php">Вход</a>
-                </li>
+                <?php if ($isLoggedIn): ?>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center" href="account.php">
+                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2"
+                                 style="width:32px; height:32px; font-size:0.9rem;">
+                                <?= htmlspecialchars(mb_substr($userName, 0, 1), ENT_QUOTES, 'UTF-8') ?>
+                            </div>
+                            <span class="small mb-0"><?= htmlspecialchars($userName, ENT_QUOTES, 'UTF-8') ?></span>
+                            <?php if ($isAdmin): ?>
+                                <span class="badge bg-danger ms-2">Admin</span>
+                            <?php endif; ?>
+                        </a>
+                    </li>
+                <?php else: ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.php">Вход</a>
+                    </li>
+                <?php endif; ?>
             </ul>
             <form class="d-flex position-relative" role="search">
                 <input class="form-control me-2" type="search" placeholder="Търси книга..." aria-label="Search" id="search-input">
@@ -30,7 +67,7 @@
                     style="font-weight:700;">Търси</button>
                 <!-- Autocomplete dropdown -->
                 <div id="autocomplete-dropdown" class="position-absolute bg-white border rounded shadow-sm" 
-                     style="top: 100%; left: 0; right: 0; max-width: 350px; z-index: 1000; display: none; max-height: 300px; overflow-y: auto;">
+                     style="top: 100%; left: 0; right: 0; max-width: 350px; z-index: 1000; display: none; max-height: 300px; overflow-y: auto; pointer-events: auto;">
                 </div>
             </form>
         </div>
@@ -84,12 +121,14 @@
                             dropdown.appendChild(item);
                         });
                         dropdown.style.display = 'block';
+                        dropdown.style.pointerEvents = 'auto';
                     } else {
                         const noResults = document.createElement('div');
                         noResults.className = 'p-2 text-muted text-center';
                         noResults.textContent = 'No books found';
                         dropdown.appendChild(noResults);
                         dropdown.style.display = 'block';
+                        dropdown.style.pointerEvents = 'auto';
                     }
                 })
                 .catch(error => {
@@ -111,7 +150,7 @@
 
     // Close dropdown when clicking outside
     document.addEventListener('click', function(e) {
-        if (e.target !== searchInput && e.target !== dropdown) {
+        if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
             dropdown.style.display = 'none';
         }
     });

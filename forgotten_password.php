@@ -41,11 +41,11 @@
                 <i class="bi bi-check-circle-fill" style="font-size: 4rem; color: #28a745;"></i>
                 <h2 class="fw-bold mt-3" style="color: #0b5367;">Успешно!</h2>
                 <p class="text-muted">Вашата парола е обновена в системата.</p>
-                <a href="login.html" class="btn btn-outline-secondary w-100 mt-3" style="border-radius: 0.75rem;">Към вход</a>
+                <a href="login.php" class="btn btn-outline-secondary w-100 mt-3" style="border-radius: 0.75rem;">Към вход</a>
             </div>
 
             <div class="text-center mt-4 border-top pt-3">
-                <a href="login.html" class="text-decoration-none small fw-bold" style="color: #348096;">
+                <a href="login.php" class="text-decoration-none small fw-bold" style="color: #348096;">
                     <i class="bi bi-arrow-left"></i> Обратно към вход
                 </a>
             </div>

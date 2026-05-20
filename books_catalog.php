@@ -21,54 +21,47 @@
         <section class="container my-5">
             <h2 class="mb-4 text-center">Каталог на всички книги</h2>
             <div class="row row-cols-1 row-cols-md-3 g-4">
+                <?php
+                require_once 'Config/db_connection.php';
+                
+                $sql = "SELECT b.*, a.name as author_name FROM books b 
+                        LEFT JOIN authors a ON b.author_id = a.id";
+                $result = $conn->query($sql);
+                
+                if ($result->num_rows > 0) {
+                    while ($book = $result->fetch_assoc()) {
+                ?>
                 <!-- Карти за книги -->
                 <div class="col">
                     <div class="card">
-                        <img src="https://picsum.photos/id/237/200/300" class="card-img-top" alt="Book 1">
+                        <img src="<?php echo htmlspecialchars($book['image_url'] ?? 'https://picsum.photos/id/237/200/300'); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($book['title']); ?>">
                         <div class="card-body">
-                            <h5 class="card-title">Книга 1</h5>
-                            <p class="card-text">Кратко описание на книгата.</p>
-                            <p class="fw-bold">Цена: 19.99 лв</p>
-                            <a href="book.html" class="btn btn-action btn-lg">Виж повече</a>
+                            <h5 class="card-title"><?php echo htmlspecialchars($book['title']); ?></h5>
+                            <p class="card-text"><?php echo htmlspecialchars(substr($book['description'] ?? 'Кратко описание на книгата.', 0, 100)); ?>...</p>
+                            <p class="fw-bold">Цена: <?php echo htmlspecialchars($book['price']); ?> лв</p>
+                            <div class="d-flex gap-2">
+                                <a href="book.php?id=<?php echo $book['id']; ?>" class="btn btn-action btn-lg">Виж повече</a>
+                                <form method="POST" action="cart.php" class="d-inline">
+                                    <input type="hidden" name="action" value="add">
+                                    <input type="hidden" name="book_id" value="<?php echo $book['id']; ?>">
+                                    <button type="submit" class="btn btn-outline-primary">Добави в количка</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="col">
-                    <div class="card">
-                        <img src="https://picsum.photos/id/238/200/300" class="card-img-top" alt="Book 2">
-                        <div class="card-body">
-                            <h5 class="card-title">Книга 2</h5>
-                            <p class="card-text">Кратко описание на книгата.</p>
-                            <p class="fw-bold">Цена: 24.99 лв</p>
-                            <a href="book.html" class="btn btn-action btn-lg">Виж повече</a>
-                        </div>
+                <?php
+                    }
+                } else {
+                ?>
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        Няма налични книги в каталога.
                     </div>
                 </div>
-
-                <div class="col">
-                    <div class="card">
-                        <img src="https://picsum.photos/id/239/200/300" class="card-img-top" alt="Book 3">
-                        <div class="card-body">
-                            <h5 class="card-title">Книга 3</h5>
-                            <p class="card-text">Кратко описание на книгата.</p>
-                            <p class="fw-bold">Цена: 21.99 лв</p>
-                            <a href="book.html" class="btn btn-action btn-lg">Виж повече</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col">
-                    <div class="card">
-                        <img src="https://picsum.photos/id/240/200/300" class="card-img-top" alt="Book 4">
-                        <div class="card-body">
-                            <h5 class="card-title">Книга 4</h5>
-                            <p class="card-text">Кратко описание на книгата.</p>
-                            <p class="fw-bold">Цена: 18.99 лв</p>
-                            <a href="book.html" class="btn btn-action btn-lg">Виж повече</a>
-                        </div>
-                    </div>
-                </div>
+                <?php
+                }
+                ?>
             </div>
         </section>
     </main>
