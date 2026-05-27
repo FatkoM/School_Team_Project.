@@ -1,12 +1,24 @@
 <!doctype html>
 <?php
 require_once __DIR__ . '/Config/db_connection.php';
+
 $featuredBooks = [];
 $featuredBooksResult = $conn->query('SELECT id, title, description, price, image_url FROM books ORDER BY id DESC LIMIT 3');
 if ($featuredBooksResult) {
     while ($row = $featuredBooksResult->fetch_assoc()) {
         $featuredBooks[] = $row;
     }
+}
+
+$newStoreBook = null;
+if (!empty($featuredBooks)) {
+    $newStoreBook = $featuredBooks[array_rand($featuredBooks)];
+}
+
+$randomBook = null;
+$randomBookResult = $conn->query('SELECT id, title, description, price, image_url FROM books ORDER BY RAND() LIMIT 1');
+if ($randomBookResult) {
+    $randomBook = $randomBookResult->fetch_assoc();
 }
 ?>
 <html lang="en">
@@ -71,13 +83,37 @@ if ($featuredBooksResult) {
                         <div class="col-12">
                             <div class="p-4 rounded-4 shadow-sm h-100" style="background: #ffffff;">
                                 <h5 class="mb-3">Избрано за теб</h5>
-                                <p>Проверете нашите най-интересни категории: учебни помагала, книги за програмиране и мотивация.</p>
+                                <?php if (!empty($randomBook)): ?>
+                                    <div class="d-flex gap-3 align-items-start">
+                                        <img src="<?= htmlspecialchars($randomBook['image_url'] ?: 'https://picsum.photos/120/160', ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($randomBook['title'], ENT_QUOTES, 'UTF-8') ?>" class="rounded" style="width: 96px; height: 128px; object-fit: cover;">
+                                        <div>
+                                            <h6 class="mb-2"><?= htmlspecialchars(mb_strimwidth($randomBook['title'], 0, 40, '...'), ENT_QUOTES, 'UTF-8') ?></h6>
+                                            <p class="small text-muted mb-2"><?= htmlspecialchars(mb_strimwidth($randomBook['description'] ?: 'Няма описание.', 0, 80, '...'), ENT_QUOTES, 'UTF-8') ?></p>
+                                            <p class="fw-semibold mb-3">Цена: <?= number_format($randomBook['price'], 2) ?> €</p>
+                                            <a href="book.php?id=<?= urlencode($randomBook['id']) ?>" class="btn btn-sm btn-action">Виж продукта</a>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <p>Няма налични препоръчани книги в момента.</p>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="p-4 rounded-4 shadow-sm h-100" style="background: #eef5fc;">
                                 <h5 class="mb-3">Ново в магазина</h5>
-                                <p>Винаги добавяме свежи заглавия. Виж последните добавени продукти в каталога.</p>
+                                <?php if (!empty($newStoreBook)): ?>
+                                    <div class="d-flex gap-3 align-items-start">
+                                        <img src="<?= htmlspecialchars($newStoreBook['image_url'] ?: 'https://picsum.photos/120/160', ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($newStoreBook['title'], ENT_QUOTES, 'UTF-8') ?>" class="rounded" style="width: 96px; height: 128px; object-fit: cover;">
+                                        <div>
+                                            <h6 class="mb-2"><?= htmlspecialchars(mb_strimwidth($newStoreBook['title'], 0, 40, '...'), ENT_QUOTES, 'UTF-8') ?></h6>
+                                            <p class="small text-muted mb-2"><?= htmlspecialchars(mb_strimwidth($newStoreBook['description'] ?: 'Няма описание.', 0, 80, '...'), ENT_QUOTES, 'UTF-8') ?></p>
+                                            <p class="fw-semibold mb-3">Цена: <?= number_format($newStoreBook['price'], 2) ?> €</p>
+                                            <a href="book.php?id=<?= urlencode($newStoreBook['id']) ?>" class="btn btn-sm btn-primary">Виж най-новото</a>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <p>Няма нови книги в момента.</p>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -99,7 +135,7 @@ if ($featuredBooksResult) {
                                 <div class="card-body d-flex flex-column">
                                     <h5 class="card-title"><?= htmlspecialchars($book['title'], ENT_QUOTES, 'UTF-8') ?></h5>
                                     <p class="card-text"><?= htmlspecialchars(mb_strimwidth($book['description'] ?? 'Няма описание.', 0, 100, '...'), ENT_QUOTES, 'UTF-8') ?></p>
-                                    <p class="fw-bold mb-3">Цена: <?= number_format($book['price'], 2) ?> лв</p>
+                                    <p class="fw-bold mb-3">Цена: <?= number_format($book['price'], 2) ?> €</p>
                                     <a href="book.php?id=<?= urlencode($book['id']) ?>" class="btn btn-action btn-lg mt-auto">Виж повече</a>
                                 </div>
                             </div>

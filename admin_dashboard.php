@@ -61,6 +61,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_book'])) {
             $errors[] = 'Възникна грешка при добавяне на книгата. Моля опитайте отново.';
         }
     }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_book'])) {
+    $deleteId = intval($_POST['id'] ?? 0);
+    if ($deleteId <= 0) {
+        $errors[] = 'Невалидна книга за изтриване.';
+    } else {
+        $conn->begin_transaction();
+        try {
+            $orderItemStmt = $conn->prepare('SELECT COUNT(*) FROM order_items WHERE book_id = ?');
+            $orderItemStmt->bind_param('i', $deleteId);
+            $orderItemStmt->execute();
+            $orderItemStmt->bind_result($linkedOrders);
+            $orderItemStmt->fetch();
+            $orderItemStmt->close();
+
+            if ($linkedOrders > 0) {
+                $errors[] = 'Книгата не може да бъде изтрита, защото е част от вече направена поръчка.';
+                $conn->rollback();
+            } else {
+                $deleteStmt = $conn->prepare('DELETE FROM books WHERE id = ?');
+                $deleteStmt->bind_param('i', $deleteId);
+                $deleteStmt->execute();
+                if ($deleteStmt->affected_rows === 0) {
+                    $errors[] = 'Книгата не беше намерена или вече е изтрита.';
+                    $conn->rollback();
+                } else {
+                    $conn->commit();
+                    $successMessage = 'Книгата беше изтрита успешно.';
+                }
+                $deleteStmt->close();
+            }
+        } catch (Exception $e) {
+            $conn->rollback();
+            $errors[] = 'Възникна грешка при изтриване на книгата. Моля опитайте отново.';
+        }
+    }
 }
 
 $totalUsersResult = $conn->query('SELECT COUNT(*) AS count FROM users');
@@ -193,7 +228,7 @@ if ($booksResult) {
                     <div class="d-flex justify-content-between">
                         <div>
                             <span class="text-secondary">Общо приходи</span>
-                            <h4 class="mb-0"><?= number_format($totalRevenue, 2) ?> лв</h4>
+                            <h4 class="mb-0"><?= number_format($totalRevenue, 2) ?> €</h4>
                         </div>
                     </div>
                 </div>
@@ -246,7 +281,7 @@ if ($booksResult) {
                                     </div>
                                     <div class="text-end">
                                         <div class="fw-bold"><?= htmlspecialchars($book['sold_count'], ENT_QUOTES, 'UTF-8') ?> бр.</div>
-                                        <div class="text-muted small"><?= number_format($book['revenue'], 2) ?> лв</div>
+                                        <div class="text-muted small"><?= number_format($book['revenue'], 2) ?> €</div>
                                     </div>
                                 </li>
                             <?php endforeach; ?>
@@ -276,7 +311,7 @@ if ($booksResult) {
                                         <tr>
                                             <td><?= htmlspecialchars($order['id'], ENT_QUOTES, 'UTF-8') ?></td>
                                             <td><?= htmlspecialchars($order['full_name'], ENT_QUOTES, 'UTF-8') ?></td>
-                                            <td><?= number_format($order['total_amount'], 2) ?> лв</td>
+                                            <td><?= number_format($order['total_amount'], 2) ?> €</td>
                                             <td><?= htmlspecialchars($order['items_count'], ENT_QUOTES, 'UTF-8') ?></td>
                                             <td><?= htmlspecialchars($order['created_at'], ENT_QUOTES, 'UTF-8') ?></td>
                                         </tr>
@@ -314,8 +349,15 @@ if ($booksResult) {
                                             <td><?= htmlspecialchars($b['id'], ENT_QUOTES, 'UTF-8') ?></td>
                                             <td><?= htmlspecialchars($b['title'], ENT_QUOTES, 'UTF-8') ?></td>
                                             <td><?= htmlspecialchars($b['author_name'] ?? '-', ENT_QUOTES, 'UTF-8') ?></td>
-                                            <td><?= number_format($b['price'], 2) ?> лв</td>
-                                            <td class="text-end"><a href="admin_edit_book.php?id=<?= urlencode($b['id']) ?>" class="btn btn-sm btn-outline-primary">Редактирай</a></td>
+                                            <td><?= number_format($b['price'], 2) ?> €</td>
+                                            <td class="text-end">
+                                                <a href="admin_edit_book.php?id=<?= urlencode($b['id']) ?>" class="btn btn-sm btn-outline-primary">Редактирай</a>
+                                                <form method="POST" action="admin_dashboard.php" class="d-inline ms-1" onsubmit="return confirm('Сигурни ли сте, че искате да изтриете тази книга?');">
+                                                    <input type="hidden" name="delete_book" value="1">
+                                                    <input type="hidden" name="id" value="<?= htmlspecialchars($b['id'], ENT_QUOTES, 'UTF-8') ?>">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Изтрий</button>
+                                                </form>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

@@ -50,7 +50,7 @@
                 <div class="col-md-7">
                     <h2 class="fw-bold"><?php echo htmlspecialchars($book['title']); ?></h2>
                     <p class="text-muted mb-2"><strong>Автор:</strong> <?php echo htmlspecialchars($book['author_name'] ?? 'Unknown'); ?></p>
-                    <p class="mb-3"><strong>Цена:</strong> <?php echo htmlspecialchars($book['price'] ?? 'N/A'); ?> лв</p>
+                    <p class="mb-3"><strong>Цена:</strong> <?php echo htmlspecialchars($book['price'] ?? 'N/A'); ?> €</p>
                     <p class="mb-4">
                         <?php echo htmlspecialchars($book['description'] ?? 'No description available'); ?>
                     </p>

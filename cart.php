@@ -237,10 +237,10 @@ foreach ($_SESSION['cart'] as $item) {
                                             </div>
                                         </td>
                                         <td class="text-end fw-bold" style="color: #0b5367;">
-                                            <?php echo number_format($item['price'], 2); ?> лв
+                                            <?php echo number_format($item['price'], 2); ?> €
                                         </td>
                                         <td class="text-end fw-bold" style="color: #0b5367;">
-                                            <?php echo number_format($item['price'] * $item['quantity'], 2); ?> лв
+                                            <?php echo number_format($item['price'] * $item['quantity'], 2); ?> €
                                         </td>
                                         <td class="text-end">
                                             <form method="POST" action="cart.php" class="d-inline">
@@ -281,7 +281,7 @@ foreach ($_SESSION['cart'] as $item) {
 
                         <div class="d-flex justify-content-between mb-2">
                             <span>Междинна сума</span>
-                            <span><?php echo number_format($total, 2); ?> лв</span>
+                            <span><?php echo number_format($total, 2); ?> €</span>
                         </div>
 
                         <div class="d-flex justify-content-between mb-3 text-success small">
@@ -296,7 +296,7 @@ foreach ($_SESSION['cart'] as $item) {
                             <span class="fw-bold">ОБЩО</span>
 
                             <span class="fw-bold fs-4" style="color: #0b5367;">
-                                <?php echo number_format($total, 2); ?> лв
+                                <?php echo number_format($total, 2); ?> €
                             </span>
 
                         </div>

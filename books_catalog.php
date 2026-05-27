@@ -38,7 +38,7 @@
                         <div class="card-body">
                             <h5 class="card-title"><?php echo htmlspecialchars($book['title']); ?></h5>
                             <p class="card-text"><?php echo htmlspecialchars(substr($book['description'] ?? 'Кратко описание на книгата.', 0, 100)); ?>...</p>
-                            <p class="fw-bold">Цена: <?php echo htmlspecialchars($book['price']); ?> лв</p>
+                            <p class="fw-bold">Цена: <?php echo htmlspecialchars($book['price']); ?> €</p>
                             <div class="d-flex gap-2">
                                 <a href="book.php?id=<?php echo $book['id']; ?>" class="btn btn-action btn-lg">Виж повече</a>
                                 <form method="POST" action="cart.php" class="d-inline">
