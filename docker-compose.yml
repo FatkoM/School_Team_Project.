@@ -1,0 +1,36 @@
+﻿version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ebook_shop_web
+    ports:
+      - "8080:80"
+    environment:
+      MYSQL_HOST: host.docker.internal 
+      MYSQL_USER: root                                # <-- Change this to root
+      MYSQL_PASSWORD: 123 
+      MYSQL_DATABASE: e-books
+    networks:
+      - ebook_network
+    volumes:
+      - ./:/var/www/html
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: ebook_shop_phpmyadmin
+    environment:
+      PMA_HOST: host.docker.internal
+      PMA_PORT: 3306
+      PMA_USER: root          
+      PMA_PASSWORD: 123 
+    ports:
+      - "8081:80"
+    networks:
+      - ebook_network
+
+networks:
+  ebook_network:
+    driver: bridge

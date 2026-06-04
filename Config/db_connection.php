@@ -1,8 +1,8 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "e-books";
+$servername = getenv('MYSQL_HOST') ?: 'localhost';
+$username = getenv('MYSQL_USER') ?: 'root';
+$password = getenv('MYSQL_PASSWORD') ?: '';
+$database = getenv('MYSQL_DATABASE') ?: 'e-books';
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $database);

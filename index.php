@@ -1,5 +1,5 @@
-<!doctype html>
 <?php
+session_start();
 require_once __DIR__ . '/Config/db_connection.php';
 
 $featuredBooks = [];
@@ -21,6 +21,7 @@ if ($randomBookResult) {
     $randomBook = $randomBookResult->fetch_assoc();
 }
 ?>
+<!doctype html>
 <html lang="en">
 
 <head>
